@@ -1,10 +1,10 @@
-Summary: Example VMOD for Varnish
-Name: vmod-varnish-%{VARNISHVER}-example
+Summary: GeoIP City VMOD for Varnish
+Name: vmod-varnish-%{VARNISHVER}-geoip-city
 Version: 0.1
 Release: 1%{?dist}
 License: BSD
 Group: System Environment/Daemons
-Source0: libvmod-example.tar.gz
+Source0: libvmod-geoip-city.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires: varnish > 3.0
 BuildRequires: make
@@ -12,10 +12,10 @@ BuildRequires: python-docutils
 BuildRequires: varnish-libs-devel
 
 %description
-Example VMOD
+GeoIP City VMOD
 
 %prep
-%setup -n libvmod-example
+%setup -n libvmod-geoip-city
 
 %build
 # this assumes that VARNISHSRC is defined on the rpmbuild command line, like this:
@@ -40,5 +40,5 @@ rm -rf %{buildroot}
 %{_mandir}/man?/*
 
 %changelog
-* Tue Nov 14 2012 Lasse Karstensen <lasse@varnish-software.com> - 0.1-0.20121114
+* Tue Sept 23 2014 Mina Smart <m.d.smart@gmail.com> - 0.1-0.20140923
 - Initial version.

@@ -1,8 +1,8 @@
 AC_PREREQ(2.59)
 AC_COPYRIGHT([Copyright (c) 2011-2014 Varnish Software AS])
-AC_INIT([libvmod-example], [trunk])
+AC_INIT([libvmod-geoip-city], [trunk])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_SRCDIR(src/vmod_example.vcc)
+AC_CONFIG_SRCDIR(src/vmod_geoip_city.vcc)
 AM_CONFIG_HEADER(config.h)
 
 AC_CANONICAL_SYSTEM
@@ -40,6 +40,8 @@ VARNISH_VMODTOOL
 
 AC_PATH_PROG([VARNISHTEST], [varnishtest])
 AC_PATH_PROG([VARNISHD], [varnishd])
+
+LIBS="$LIBS -lGeoIP"
 
 AC_CONFIG_FILES([
 	Makefile

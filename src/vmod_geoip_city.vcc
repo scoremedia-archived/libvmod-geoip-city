@@ -1,2 +1,16 @@
-$Module example 3 Example VMOD
-$Function STRING hello(STRING)
+$Module geoip_city Varnish GeoIP City Module
+$Init init_function
+$Function VOID locate(PRIV_VCL, STRING)
+$Function VOID locate_ip(PRIV_VCL, IP)
+$Function VOID clean_up()
+$Function STRING country_code()
+$Function STRING country_code3()
+$Function STRING country_name()
+$Function STRING region()
+$Function STRING city()
+$Function STRING postal_code()
+$Function STRING latitude()
+$Function STRING longitude()
+$Function STRING area_code()
+$Function STRING metro_code()
+$Function STRING continent_code()

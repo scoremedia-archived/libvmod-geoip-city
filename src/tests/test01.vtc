@@ -1,4 +1,4 @@
-varnishtest "Test example vmod"
+varnishtest "Test geoip_city vmod"
 
 server s1 {
        rxreq
@@ -6,17 +6,41 @@ server s1 {
 } -start
 
 varnish v1 -vcl+backend {
-	import example from "${vmod_topbuild}/src/.libs/libvmod_example.so";
+	import geoip_city from "${vmod_topbuild}/src/.libs/libvmod_geoip_city.so";
 
 	sub vcl_deliver {
-		set resp.http.hello = example.hello("World");
+    geoip_city.locate("74.125.228.198");
+
+    set resp.http.X-Country-Code = geoip_city.country_code();
+    set resp.http.X-Country-Code3 = geoip_city.country_code3();
+    set resp.http.X-Country-Name = geoip_city.country_name();
+    set resp.http.X-Region = geoip_city.region();
+    set resp.http.X-City = geoip_city.city();
+    set resp.http.X-Postal-Code = geoip_city.postal_code();
+    set resp.http.X-Latitude = geoip_city.latitude();
+    set resp.http.X-Longitude = geoip_city.longitude();
+    set resp.http.X-Area-Code = geoip_city.area_code();
+    set resp.http.X-Metro-Code = geoip_city.metro_code();
+    set resp.http.X-Continent-Code = geoip_city.continent_code();
+
+    geoip_city.clean_up();
 	}
 } -start
 
 client c1 {
 	txreq -url "/"
 	rxresp
-	expect resp.http.hello == "Hello, World"
+  expect resp.http.X-Country-Code == "US"
+  expect resp.http.X-Country-Code3 == "USA"
+  expect resp.http.X-Country-Name == "United States"
+  expect resp.http.X-Region == "CA"
+  expect resp.http.X-City == "Mountain View"
+  expect resp.http.X-Postal-Code == "94043"
+  expect resp.http.X-Latitude == "37.419201"
+  expect resp.http.X-Longitude == "-122.057404"
+  expect resp.http.X-Area-Code == "650"
+  expect resp.http.X-Metro-Code == "807"
+  expect resp.http.X-Continent-Code == "NA"
 }
 
 client c1 -run

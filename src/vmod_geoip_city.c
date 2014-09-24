@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <GeoIP.h>
 #include <GeoIPCity.h>
 
@@ -13,6 +14,20 @@ struct GeoIPHandles {
 
 static pthread_key_t key;
 static pthread_once_t key_is_initialized = PTHREAD_ONCE_INIT;
+
+static const char * unknown_country_code = "AA";
+static const char * unknown_country_code3 = "AAA";
+static const char * unknown_country_name = "No Record";
+static const char * unknown_region = "No Record";
+static const char * unknown_city = "No Record";
+static const char * unknown_postal_code =  "No Record";
+static const char * unknown_latitude = "0";
+static const char * unknown_longitude = "0";
+static const char * unknown_area_code = "000";
+static const char * unknown_metro_code = "000";
+static const char * unknown_continent_code = "AA";
+
+static const int MAX_STRING = sizeof(char) * 32;
 
 static void make_key(void);
 static void store_record(GeoIPRecord * record);
@@ -113,7 +128,7 @@ VCL_STRING vmod_country_code(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->country_code))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_country_code, -1);
 
     return WS_Copy(ctx->ws, record->country_code, -1);
 }
@@ -123,7 +138,7 @@ vmod_country_code3(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->country_code3))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_country_code3, -1);
 
     return WS_Copy(ctx->ws, record->country_code3, -1);
 }
@@ -133,7 +148,7 @@ vmod_country_name(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->country_name))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_country_name, -1);
 
     return WS_Copy(ctx->ws, record->country_name, -1);
 }
@@ -143,7 +158,7 @@ vmod_region(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->region))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_region, -1);
 
     return WS_Copy(ctx->ws, record->region, -1);
 }
@@ -153,7 +168,7 @@ vmod_city(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->city))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_city, -1);
 
     return WS_Copy(ctx->ws, record->city, -1);
 }
@@ -163,7 +178,7 @@ vmod_postal_code(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->postal_code))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_postal_code, -1);
 
     return WS_Copy(ctx->ws, record->postal_code, -1);
 }
@@ -173,14 +188,11 @@ vmod_latitude(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->latitude))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_latitude, -1);
 
-    int int_latitude = record->latitude;
-    int int_latitude_dec = (record->latitude - int_latitude) * 100000;
+    char * latitude = WS_Alloc(ctx->ws, MAX_STRING);
 
-    char * latitude = WS_Alloc(ctx->ws, 32 * sizeof(char));
-
-    sprintf(latitude, "%d.%04d", int_latitude, int_latitude_dec);
+    sprintf(latitude, "%f", record->latitude);
 
     return latitude;
 }
@@ -190,14 +202,11 @@ vmod_longitude(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->longitude))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_longitude, -1);
 
-    int int_longitude = record->longitude;
-    int int_longitude_dec = (record->longitude - int_longitude) * 100000;
+    char * longitude = WS_Alloc(ctx->ws, MAX_STRING);
 
-    char * longitude = WS_Alloc(ctx->ws, 32 * sizeof(char));
-
-    sprintf(longitude, "%d.%04d", int_longitude, int_longitude_dec);
+    sprintf(longitude, "%f", record->longitude);
 
     return longitude;
 }
@@ -207,9 +216,9 @@ vmod_area_code(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->area_code))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_area_code, -1);
 
-    char * area_code = WS_Alloc(ctx->ws, 32 * sizeof(char));
+    char * area_code = WS_Alloc(ctx->ws, MAX_STRING);
 
     sprintf(area_code, "%d", record->area_code);
 
@@ -221,9 +230,9 @@ vmod_metro_code(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->metro_code))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_metro_code, -1);
 
-    char * metro_code = WS_Alloc(ctx->ws, 32 * sizeof(char));
+    char * metro_code = WS_Alloc(ctx->ws, MAX_STRING);
 
     sprintf(metro_code, "%d", record->metro_code);
 
@@ -235,7 +244,7 @@ vmod_continent_code(const struct vrt_ctx *ctx)
 {
     GeoIPRecord * record = fetch_record();
     if (!(record && record->continent_code))
-        return WS_Copy(ctx->ws, "", -1);
+        return WS_Copy(ctx->ws, unknown_continent_code, -1);
 
     return WS_Copy(ctx->ws, record->continent_code, -1);
 }

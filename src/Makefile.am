@@ -3,7 +3,7 @@ AM_CPPFLAGS = @VMOD_INCLUDES@
 vmoddir = @VMOD_DIR@
 vmod_LTLIBRARIES = libvmod_geoip_city.la
 
-libvmod_geoip_city_la_LDFLAGS = -module -export-dynamic -avoid-version -shared
+libvmod_geoip_city_la_LDFLAGS = -module -export-dynamic -avoid-version
 
 libvmod_geoip_city_la_SOURCES = \
 	vcc_if.c \

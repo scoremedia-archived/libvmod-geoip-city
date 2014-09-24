@@ -29,6 +29,9 @@ if test "x$RST2MAN" = "xno"; then
 fi
 AM_CONDITIONAL(HAVE_RST2MAN, [test "x$RST2MAN" != "xno"])
 
+# Check for pkg-config
+PKG_PROG_PKG_CONFIG
+
 # Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS([sys/stdlib.h])
@@ -41,6 +44,22 @@ VARNISH_VMODTOOL
 AC_PATH_PROG([VARNISHTEST], [varnishtest])
 AC_PATH_PROG([VARNISHD], [varnishd])
 
+# Check for GeoIP
+AC_ARG_WITH([geoip],
+    [  --with-geoip=PATH       find the GeoIP SDK installed in PATH],
+    [
+        CPPFLAGS="$CPPFLAGS -I${withval}/include"
+        LDFLAGS="$LDFLAGS -L${withval}/lib"
+    ], 
+    [:]
+)
+AC_CHECK_LIB([GeoIP], [GeoIP_assign_region_by_inetaddr], 
+    [AC_CHECK_HEADER([GeoIP.h],
+        [],
+        [AC_MSG_ERROR([Failed to find the GeoIP SDK (1).  Specify --with-geoip=PATH])]
+    )],
+    [AC_MSG_ERROR([Failed to find the GeoIP SDK (2).  Specify --with-geoip=PATH])]
+)
 LIBS="$LIBS -lGeoIP"
 
 AC_CONFIG_FILES([

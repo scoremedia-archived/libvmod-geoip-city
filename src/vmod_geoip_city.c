@@ -61,7 +61,7 @@ clear_record(void)
 {
     GeoIPRecord * record = fetch_record();
     if (record != NULL)
-        free(record);
+        GeoIPRecord_delete(record);
 
     pthread_setspecific(key, NULL);
 }

@@ -92,8 +92,8 @@ init_function(struct vmod_priv *priv_vcl, const struct VCL_conf *conf)
 
     struct GeoIPHandles * handles = (struct GeoIPHandles*)priv_vcl->priv;
 
-    handles->base = GeoIP_new(GEOIP_MMAP_CACHE);
-    handles->city_db = GeoIP_open(GeoIPDBFileName[GEOIP_CITY_EDITION_REV1], GEOIP_MMAP_CACHE);
+    handles->base = GeoIP_new(GEOIP_MMAP_CACHE | GEOIP_CHECK_CACHE);
+    handles->city_db = GeoIP_open(GeoIPDBFileName[GEOIP_CITY_EDITION_REV1], GEOIP_MMAP_CACHE | GEOIP_CHECK_CACHE);
 
     priv_vcl->free = &free_geoip_handles;
 
